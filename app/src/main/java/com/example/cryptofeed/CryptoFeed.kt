@@ -11,6 +11,7 @@ data class CoinInfo(
     val fullName: String
 )
 
+/** Raw bisa dikatakan aggregate jika lebih dari 1 object properties nya */
 data class Raw(
     val usd: Usd
 )
