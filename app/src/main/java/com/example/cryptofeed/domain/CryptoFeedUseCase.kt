@@ -1,4 +1,4 @@
-package com.example.cryptofeed
+package com.example.cryptofeed.domain
 
 import kotlinx.coroutines.flow.Flow
 

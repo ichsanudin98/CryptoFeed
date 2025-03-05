@@ -1,4 +1,4 @@
-package com.example.cryptofeed
+package com.example.cryptofeed.domain
 
 data class CryptoFeed(
     val coinInfo: CoinInfo,
