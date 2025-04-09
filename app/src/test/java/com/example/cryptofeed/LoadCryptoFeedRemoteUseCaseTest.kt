@@ -45,15 +45,6 @@ interface HttpClient {
     }
 }
 
-class HttpClientSpy: HttpClient {
-    var getCount = 0
-
-    override fun get() {
-        super.get()
-        getCount++
-    }
-}
-
 /*class HttpClient {
     var count = 0
 }*/
@@ -61,21 +52,34 @@ class HttpClientSpy: HttpClient {
 class LoadCryptoFeedRemoteUseCaseTest {
     @Test
     fun testInitDoesNotLoad() {
-        val client = HttpClientSpy()
-        LoadCryptoFeedRemoteUseCase(client = client)
+        val (_, client) = makeSut()
         assertTrue(client.getCount == 0)
     }
 
     @Test
     fun testLoadRequestData() {
         // Given (Component and dependencies)
-        val client = HttpClientSpy()
-        val sut = LoadCryptoFeedRemoteUseCase(client = client)
+        val (sut, client) = makeSut()
 
         // When (Action)
         sut.load()
 
         // Then
         assertEquals(1, client.getCount)
+    }
+
+    private fun makeSut(): Pair<LoadCryptoFeedRemoteUseCase, HttpClientSpy> {
+        val client = HttpClientSpy()
+        val sut = LoadCryptoFeedRemoteUseCase(client = client)
+        return Pair(sut, client)
+    }
+
+    private class HttpClientSpy: HttpClient {
+        var getCount = 0
+
+        override fun get() {
+            super.get()
+            getCount++
+        }
     }
 }
