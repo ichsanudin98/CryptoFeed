@@ -30,7 +30,7 @@ class LoadCryptoFeedRemoteUseCase constructor(
 
 // Global instance
 // Jika global ini sudah dipakai dibanyak tempat, maka menjadi global mutable shared instance
-open class HttpClient {
+/*open class HttpClient {
     companion object {
         var instance = HttpClient()
     }
@@ -38,9 +38,14 @@ open class HttpClient {
     open fun get() {
 
     }
+}*/
+interface HttpClient {
+    fun get() {
+
+    }
 }
 
-class HttpClientSpy: HttpClient() {
+class HttpClientSpy: HttpClient {
     var getCount = 0
 
     override fun get() {
@@ -57,8 +62,7 @@ class LoadCryptoFeedRemoteUseCaseTest {
     @Test
     fun testInitDoesNotLoad() {
         val client = HttpClientSpy()
-        HttpClient.instance = client
-        LoadCryptoFeedRemoteUseCase(client)
+        LoadCryptoFeedRemoteUseCase(client = client)
         assertTrue(client.getCount == 0)
     }
 
@@ -66,8 +70,7 @@ class LoadCryptoFeedRemoteUseCaseTest {
     fun testLoadRequestData() {
         // Given (Component and dependencies)
         val client = HttpClientSpy()
-        HttpClient.instance = client
-        val sut = LoadCryptoFeedRemoteUseCase(client)
+        val sut = LoadCryptoFeedRemoteUseCase(client = client)
 
         // When (Action)
         sut.load()
