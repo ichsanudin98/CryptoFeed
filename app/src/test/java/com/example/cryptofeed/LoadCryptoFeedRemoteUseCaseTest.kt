@@ -8,13 +8,13 @@ import org.junit.Test
 
 class LoadCryptoFeedRemoteUseCaseTest {
     @Test
-    fun testInitDoesNotLoad() {
+    fun testInitDoesNotRequestData() {
         val (_, client) = makeSut()
         assertTrue(client.getCount == 0)
     }
 
     @Test
-    fun testLoadRequestData() {
+    fun testLoadRequestsData() {
         val (sut, client) = makeSut()
         sut.load()
         assertEquals(1, client.getCount)
