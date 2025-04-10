@@ -21,7 +21,7 @@ class LoadCryptoFeedRemoteUseCaseTest {
     }
 
     @Test
-    fun testLoadTwiceRequestsData() {
+    fun testLoadTwiceRequestsDataTwice() {
         val (sut, client) = makeSut()
         sut.load()
         sut.load()
