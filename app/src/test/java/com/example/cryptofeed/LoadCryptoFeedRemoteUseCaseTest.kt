@@ -2,7 +2,10 @@ package com.example.cryptofeed
 
 import app.cash.turbine.test
 import com.example.cryptofeed.api.Connectivity
+import com.example.cryptofeed.api.ConnectivityException
 import com.example.cryptofeed.api.HttpClient
+import com.example.cryptofeed.api.InvalidData
+import com.example.cryptofeed.api.InvalidDataException
 import com.example.cryptofeed.api.LoadCryptoFeedRemoteUseCase
 import io.mockk.MockKAnnotations
 import io.mockk.confirmVerified
@@ -74,10 +77,28 @@ class LoadCryptoFeedRemoteUseCaseTest {
     fun testLoadDeliversErrorOnClientError() = runBlocking {
         every {
             client.get()
-        } returns flowOf(Connectivity())
+        } returns flowOf(ConnectivityException())
 
         sut.load().test {
             assertEquals(Connectivity::class.java, awaitItem()::class.java)
+            awaitComplete()
+        }
+
+        verify(exactly = 1) {
+            client.get()
+        }
+
+        confirmVerified(client)
+    }
+
+    @Test
+    fun testLoadDeliversInvalidDataError() = runBlocking {
+        every {
+            client.get()
+        } returns flowOf(InvalidDataException())
+
+        sut.load().test {
+            assertEquals(InvalidData::class.java, awaitItem()::class.java)
             awaitComplete()
         }
 
