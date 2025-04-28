@@ -6,6 +6,8 @@ import com.example.cryptofeed.api.BadRequestException
 import com.example.cryptofeed.api.Connectivity
 import com.example.cryptofeed.api.ConnectivityException
 import com.example.cryptofeed.api.HttpClient
+import com.example.cryptofeed.api.InternalServerError
+import com.example.cryptofeed.api.InternalServerErrorException
 import com.example.cryptofeed.api.InvalidData
 import com.example.cryptofeed.api.InvalidDataException
 import com.example.cryptofeed.api.LoadCryptoFeedRemoteUseCase
@@ -110,6 +112,7 @@ class LoadCryptoFeedRemoteUseCaseTest {
 
         confirmVerified(client)
     }
+
     @Test
     fun testLoadDeliversBadRequestError() = runBlocking {
         every {
@@ -118,6 +121,24 @@ class LoadCryptoFeedRemoteUseCaseTest {
 
         sut.load().test {
             assertEquals(BadRequest::class.java, awaitItem()::class.java)
+            awaitComplete()
+        }
+
+        verify(exactly = 1) {
+            client.get()
+        }
+
+        confirmVerified(client)
+    }
+
+    @Test
+    fun testLoadDeliversInternalServerError() = runBlocking {
+        every {
+            client.get()
+        } returns flowOf(InternalServerErrorException())
+
+        sut.load().test {
+            assertEquals(InternalServerError::class.java, awaitItem()::class.java)
             awaitComplete()
         }
 

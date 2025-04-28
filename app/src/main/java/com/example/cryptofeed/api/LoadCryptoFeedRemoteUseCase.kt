@@ -10,6 +10,7 @@ interface HttpClient {
 class ConnectivityException: Exception()
 class InvalidDataException: Exception()
 class BadRequestException: Exception()
+class InternalServerErrorException: Exception()
 
 class LoadCryptoFeedRemoteUseCase constructor(
     private val client: HttpClient
@@ -26,6 +27,9 @@ class LoadCryptoFeedRemoteUseCase constructor(
                 is BadRequestException -> {
                     emit(BadRequest())
                 }
+                is InternalServerErrorException -> {
+                    emit(InternalServerError())
+                }
                 else -> {
                     emit(Connectivity())
                 }
@@ -37,3 +41,4 @@ class LoadCryptoFeedRemoteUseCase constructor(
 class Connectivity: Exception()
 class InvalidData: Exception()
 class BadRequest: Exception()
+class InternalServerError: Exception()
