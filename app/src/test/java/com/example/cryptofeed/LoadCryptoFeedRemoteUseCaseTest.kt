@@ -1,6 +1,8 @@
 package com.example.cryptofeed
 
 import app.cash.turbine.test
+import com.example.cryptofeed.api.BadRequest
+import com.example.cryptofeed.api.BadRequestException
 import com.example.cryptofeed.api.Connectivity
 import com.example.cryptofeed.api.ConnectivityException
 import com.example.cryptofeed.api.HttpClient
@@ -99,6 +101,23 @@ class LoadCryptoFeedRemoteUseCaseTest {
 
         sut.load().test {
             assertEquals(InvalidData::class.java, awaitItem()::class.java)
+            awaitComplete()
+        }
+
+        verify(exactly = 1) {
+            client.get()
+        }
+
+        confirmVerified(client)
+    }
+    @Test
+    fun testLoadDeliversBadRequestError() = runBlocking {
+        every {
+            client.get()
+        } returns flowOf(BadRequestException())
+
+        sut.load().test {
+            assertEquals(BadRequest::class.java, awaitItem()::class.java)
             awaitComplete()
         }
 
